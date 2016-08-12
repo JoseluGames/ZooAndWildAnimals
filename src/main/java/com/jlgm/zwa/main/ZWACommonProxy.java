@@ -4,6 +4,7 @@ import com.jlgm.zwa.block.ZWABlock;
 import com.jlgm.zwa.item.ZWAItem;
 import com.jlgm.zwa.tileentity.ZWATileEntity;
 import com.jlgm.zwa.creativetab.ZWACreativeTab;
+import com.jlgm.zwa.entity.ZWAEntity;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -23,6 +24,7 @@ public class ZWACommonProxy{
 		ZWACreativeTab.initialiseCreativeTab();
 		
 		ZWATileEntity.registerTileEntity();
+		ZWAEntity.registerEntity();
 	}
 
 	public void init(FMLInitializationEvent initEvent){
