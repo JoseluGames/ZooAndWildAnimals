@@ -2,7 +2,7 @@ package com.jlgm.zwa.main;
 
 import com.jlgm.zwa.block.ZWABlock;
 import com.jlgm.zwa.lib.ZWAVersionChecker;
-import com.jlgm.zwa.renderer.ZWARenderer;
+import com.jlgm.zwa.renderer.entity.ZWAEntityRenderer;
 
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -13,7 +13,7 @@ public class ZWAClientProxy extends ZWACommonProxy{
 	@Override
 	public void preInit(FMLPreInitializationEvent preInitEvent){
 		super.preInit(preInitEvent);
-		ZWARenderer.registerRenderer();
+		ZWAEntityRenderer.registerRenderer();
 	}
 
 	@Override

@@ -41,5 +41,4 @@ public class RenderCommonChimpanzee extends RenderLiving<EntityCommonChimpanzee>
 	protected ResourceLocation getEntityTexture(EntityCommonChimpanzee entity) {
 		return commonChimpanzeeTexture[entity.getVariant()];
 	}
-
 }

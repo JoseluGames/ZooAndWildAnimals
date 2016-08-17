@@ -1,7 +1,5 @@
 package com.jlgm.zwa.entity;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
@@ -11,6 +9,7 @@ import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAILeapAtTarget;
 import net.minecraft.entity.ai.EntityAILookIdle;
+import net.minecraft.entity.ai.EntityAIPanic;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
@@ -25,17 +24,26 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-public class EntityCommonChimpanzee extends EntityTameable{
-	
-    private static final DataParameter<Integer> CHIMPANZEE_VARIANT = EntityDataManager.<Integer>createKey(EntityCommonChimpanzee.class, DataSerializers.VARINT);
+/*
+ * - Spawns in Jungles and Swamps
+ * - Neutral: When attacked will attack
+ * - Eats all plants on the ground and fed to it
+ * - When tamed just makes it passive and able to put on a lead
+ * - Can be tamed with 6 melon slices
+ * - Will charge to attack
+ * - Can swim
+ */
 
-	public EntityCommonChimpanzee(World worldIn) {
+public class EntitySumatranRhinoceros extends EntityTameable{
+	
+    private static final DataParameter<Integer> VARIANT = EntityDataManager.<Integer>createKey(EntitySumatranRhinoceros.class, DataSerializers.VARINT);
+    
+	public EntitySumatranRhinoceros(World worldIn) {
 		super(worldIn);
         PotionEffect potioneffect = new PotionEffect(MobEffects.GLOWING, 100000, 0);
         this.addPotionEffect(potioneffect);
@@ -46,15 +54,15 @@ public class EntityCommonChimpanzee extends EntityTameable{
 	@Override
     protected void entityInit(){
         super.entityInit();
-        this.dataManager.register(CHIMPANZEE_VARIANT, this.getRNG().nextInt(3));
+        this.dataManager.register(VARIANT, this.getRNG().nextInt(3));
     }
 	
     public void setVariant(int variant){
-        this.dataManager.set(CHIMPANZEE_VARIANT, Integer.valueOf(variant));
+        this.dataManager.set(VARIANT, Integer.valueOf(variant));
     }
 
     public int getVariant(){
-        return ((Integer)this.dataManager.get(CHIMPANZEE_VARIANT)).intValue();
+        return ((Integer)this.dataManager.get(VARIANT)).intValue();
     }
 	
 	//BEGIN AI
@@ -65,22 +73,14 @@ public class EntityCommonChimpanzee extends EntityTameable{
 	
 	public void setupAI(){
 		clearAITasks();
-        /*this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(1, new EntityAIPanic(this, 2.0D));
-        this.tasks.addTask(2, new EntityAIMate(this, 1.0D));
-        this.tasks.addTask(3, new EntityAITempt(this, 1.25D, Items.WHEAT, false));
-        this.tasks.addTask(4, new EntityAIFollowParent(this, 1.25D));
-        this.tasks.addTask(5, new EntityAIWander(this, 1.0D));
-        this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 6.0F));
-        this.tasks.addTask(7, new EntityAILookIdle(this));*/
 		tasks.addTask(0, new EntityAISwimming(this));
-		//tasks.addTask(1, new EntityAIPanic(this, 1.0D));
-		tasks.addTask(1, new EntityAILeapAtTarget(this, 0.4F));
-		tasks.addTask(2, new EntityAIAttackMelee(this, 1.0D, true));
+		tasks.addTask(1, new EntityAIPanic(this, 2.0D));
+		/*tasks.addTask(1, new EntityAILeapAtTarget(this, 0.4F));
+		tasks.addTask(2, new EntityAIAttackMelee(this, 1.0D, true));*/
 		tasks.addTask(2, new EntityAIWander(this, 1.0D));
 		tasks.addTask(3, new EntityAIWatchClosest(this, EntityPlayer.class, 6.0F));
 		tasks.addTask(4, new EntityAILookIdle(this));
-		targetTasks.addTask(0, new EntityAIHurtByTarget(this, false));
+		//targetTasks.addTask(0, new EntityAIHurtByTarget(this, false));
 	}
 	
 	public void clearAITasks(){
@@ -159,17 +159,11 @@ public class EntityCommonChimpanzee extends EntityTameable{
 
         return flag;
     }
-	
+
 	@Override
 	public EntityAgeable createChild(EntityAgeable ageable) {
 		return null;
 	}
-	
-	/*@Override
-    public NBTTagCompound getUpdateTag(){
-		NBTTagCompound tag = super.getUpdateTag();
-        return this.writeToNBT(tag);
-    }*/
 	
 	@Override
     public NBTTagCompound writeToNBT(NBTTagCompound tagCompound){
@@ -183,18 +177,4 @@ public class EntityCommonChimpanzee extends EntityTameable{
 		super.readFromNBT(tagCompound);
 		this.setVariant(tagCompound.getInteger("Variant"));
 	}
-	
-    /*@Override
-    @Nullable
-    public SPacketUpdateTileEntity getUpdatePacket(){
-        NBTTagCompound tagCompound = new NBTTagCompound();
-        writeToNBT(tagCompound);
-        return new SPacketUpdateTileEntity(this.pos, this.getBlockMetadata(), tagCompound);
-    }
-   
-    @Override
-    public void onDataPacket(net.minecraft.network.NetworkManager net, net.minecraft.network.play.server.SPacketUpdateTileEntity pkt){
-        NBTTagCompound tag = pkt.getNbtCompound();
-        readFromNBT(tag);
-    }*/
 }
